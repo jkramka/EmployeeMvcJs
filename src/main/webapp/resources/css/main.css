@@ -1,0 +1,14 @@
+h1{
+	font-family: arial;
+	color:red;
+}
+
+table{
+	border: 1px solid black;
+}
+
+.error
+    {
+        color: #ff0000;
+        font-weight: bold;
+    }
