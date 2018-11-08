@@ -16,8 +16,7 @@ public class EmployeeController {
 
 	private static final String[ ] countries = { "France", "United States", "Germany", "England" };
 	
-	private static final String[ ] months = {"January", "February", "March", "April", "May", "June", "July", "August", "September",
-			"October", "November", "December"};
+	private static final String[ ] months = {"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
 	
 	@RequestMapping(value = "/form")
 	public ModelAndView employee( ){
@@ -57,15 +56,18 @@ public class EmployeeController {
 	        result.rejectValue("birthMonth", "error.birthMonth");
 	        error = true;
 	    } else {
-	    	int counter = 0;
-	    	while (employee.getBirthMonth() != months[counter]){
-	    		error = true;
-	    		counter = counter + 1;
-	    		if (counter > 11) {
-	    			break;
-	    		}
-	    	} 
-	    	if (error = true) {
+	    	//boolean truth;
+	    	error = true;
+	    	//System.out.println(employee.getBirthMonth());
+	    	//System.out.println(months[counter]);
+	    	
+	    	
+	    	for (int i = 0; i<=11; ++i) { 
+	    	    if (employee.getBirthMonth().equals(months[i])) {
+	    	    	error = false;
+	    	    }
+	    	}
+	    	if (error) {
     			result.rejectValue("birthMonth", "error.birthMonth");
     		}
 	    }
@@ -86,6 +88,27 @@ public class EmployeeController {
 	@RequestMapping(value = "/viewAll")
 	public ModelAndView viewAll( ){
 		ModelAndView modelAndView = new ModelAndView();
+		List<Employee> allEmployees = dao.getAllEmployees();
+		modelAndView.setViewName("viewAllEmployees");
+		modelAndView.addObject("all", allEmployees);
+		return modelAndView;
+	}
+	
+	@RequestMapping(value = "/delete")
+	public ModelAndView delete(@ModelAttribute("employee") Employee employee, BindingResult result ){
+		ModelAndView modelAndView = new ModelAndView();
+		//System.out.println(employee.getId());
+		
+		//validates that a record has been selected
+		if (employee.getId() == 0) {
+		result.rejectValue("id", "error.id");
+		List<Employee> allEmployees = dao.getAllEmployees();
+		modelAndView.setViewName("viewAllEmployees");
+		modelAndView.addObject("all", allEmployees);
+		return modelAndView;
+		}
+		
+		dao.deleteEmployee(employee);
 		List<Employee> allEmployees = dao.getAllEmployees();
 		modelAndView.setViewName("viewAllEmployees");
 		modelAndView.addObject("all", allEmployees);
